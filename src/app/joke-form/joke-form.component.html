@@ -1,11 +1,46 @@
 <div>
-  <div class="form">
+
+
+  <form #f="ngForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
-      <input class="fomr-control" type="text" placeholder="setup" #setup/>
+      <input class="form-control" minlength="6" type="text" placeholder="punchline" [(ngModel)]="model.punchline" name="punchline"
+        required [ngClass]="{
+          'is-invalid': punchline.invalid && (punchline.dirty || punchline.touched),
+          'is-valid': punchline.valid && punchline.dirty
+        }" #punchline="ngModel" />
+
     </div>
+
+
     <div class="form-group">
-      <input class="fomr-control" type="text" placeholder="punchline" #punchline/>
+      <input class="form-control"  type="text" placeholder="setup"  [(ngModel)]="model.setup" name="setup" required [ngClass]="{
+          'is-invalid': setup.invalid && (setup.dirty || setup.touched),
+          'is-valid': setup.valid && setup.dirty
+        }" #setup="ngModel" />
+        <div *ngIf="setup.invalid">
+            {{setup.errors.required}}
+        </div>
     </div>
-    <button class="btn btn-primary" (click)="addJoke(setup.value, punchline.value)">Add</button>
-  </div>
+
+    <div *ngIf="setup.invalid && (setup.dirty || setup.touched)">
+      <div *ngIf="setup.errors.required">
+        setup is required
+      </div>
+    </div>
+    <div *ngIf="punchline.invalid && (punchline.dirty || punchline.touched)">
+      <div *ngIf="punchline.errors.required">
+        punchline is required
+      </div>
+      <div *ngIf="punchline.errors.minlength">
+        punchline must be at least 6 characters, remaining {{ punchline.errors.minlength.requiredLength - punchline.errors.minlength.actualLength
+        }} characters
+      </div>
+    </div>
+
+    <button [disabled]="form.invalid" class="btn btn-primary" type="submit">
+      Add
+    </button>
+    {{form.value|json}}
+
+  </form>
 </div>
